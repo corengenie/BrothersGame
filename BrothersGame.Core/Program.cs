@@ -2,19 +2,17 @@
 {
     internal static class BrothersGameMain
     {
+        private const string IntroMessage = "Формат ввода клетки для хода - строка столбец\n" +
+                                            "Пример: 3 5\n" +
+                                            "После ввода размера, сгенерируется игровое поле и начнется игра.\n" +
+                                            "Удачи!";
         public static void Main()
         {
-            {
-                const string INTRO_MESSAGE = "Формат ввода клетки для хода - строка столбец\n" +
-                                    "Пример: 3 5\n" +
-                                    "После ввода размера, сгенерируется игровое поле и начнется игра.\n" +
-                                    "Удачи!";
-                ColoredConsoleWriteLine(INTRO_MESSAGE, ConsoleColor.Green);
-            }
+            ColoredConsoleWriteLine(IntroMessage, ConsoleColor.Green);
 
             Console.Write("Введите размер поля: ");
             int fieldSize;
-            while(!int.TryParse(Console.ReadLine(), out fieldSize))
+            while(!int.TryParse(Console.ReadLine(), out fieldSize) || fieldSize <= 0)
             {
                 ColoredConsoleWriteLine("Вы ввели неверное значение", ConsoleColor.Red);
                 Console.Write("Введите размер поля: ");
@@ -23,7 +21,7 @@
             var gameField = new GameField(fieldSize);
             gameField.Shuffle();
 
-            while (!gameField.CheckIfSolved())
+            while (!gameField.IsSolved())
             {
                 Console.Clear();
                 gameField.Print();
@@ -34,8 +32,8 @@
 
                 if (input == null ||
                     input.Length != 2 ||
-                    !int.TryParse(input[0], out int row) ||
-                    !int.TryParse(input[1], out int column) ||
+                    !int.TryParse(input[0], out var row) ||
+                    !int.TryParse(input[1], out var column) ||
                     row < 1 || row > fieldSize ||
                     column < 1 || column > fieldSize)
                 {
@@ -51,7 +49,8 @@
             ColoredConsoleWriteLine("Ура, Вы прошли игру!", ConsoleColor.Green);
         }
 
-        internal static void ColoredConsoleWriteLine(string message, ConsoleColor textColor, ConsoleColor afterTextColor = ConsoleColor.White)
+        private static void ColoredConsoleWriteLine(
+            string message, ConsoleColor textColor, ConsoleColor afterTextColor = ConsoleColor.White)
         {
             Console.ForegroundColor = textColor;
             Console.WriteLine(message);

@@ -1,28 +1,27 @@
 ﻿namespace BrothersGame.Core
 {
-    internal enum CellDirection
-    {
-        Horizontal,
-        Vertical
-    }
-
     internal class GameFieldCell
     {
-        public CellDirection Direction { get; set; }
+        private const string HorizontalLine = "-";
+        private const string VerticalLine = "|";
+        
+        public CellDirection Direction { get; private set; }
 
         public GameFieldCell()
         {
-            this.Direction = CellDirection.Horizontal;
+            Direction = CellDirection.Horizontal;
         }
 
         public void SwitchDirection()
         {
-            this.Direction = (this.Direction == CellDirection.Horizontal) ? CellDirection.Vertical : CellDirection.Horizontal;
+            Direction = Direction == CellDirection.Horizontal
+                ? CellDirection.Vertical
+                : CellDirection.Horizontal;
         }
 
         public override string ToString()
         {
-            return this.Direction == CellDirection.Horizontal ? "-" : "|";
+            return Direction == CellDirection.Horizontal ? HorizontalLine : VerticalLine;
         }
     }
 }

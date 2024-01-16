@@ -2,23 +2,23 @@
 {
     internal class GameField
     {
-        private GameFieldCell[,] _field;
-        public int _fieldSize { get; private set; }
+        private readonly GameFieldCell[,] _field;
+        private int FieldSize { get; set; }
 
         public GameField(int fieldSize)
         {
-            this._fieldSize = fieldSize;
-            this._field = new GameFieldCell[fieldSize, fieldSize];
+            FieldSize = fieldSize;
+            _field = new GameFieldCell[fieldSize, fieldSize];
 
-            for (int i = 0; i < _fieldSize; i++)
+            for (var i = 0; i < FieldSize; i++)
             {
-                for (int j = 0; j < _fieldSize; j++)
+                for (var j = 0; j < FieldSize; j++)
                 {
-                    this._field[i, j] = new GameFieldCell();
+                    _field[i, j] = new GameFieldCell();
                 }
             }
 
-            this.Shuffle();
+            Shuffle();
         }
 
         public void Shuffle()
@@ -26,46 +26,42 @@
             var rnd = new Random();
             do
             {
-                for (int _ = 0; _ < Math.Pow(_fieldSize, 2); _++)
+                for (var _ = 0; _ < Math.Pow(FieldSize, 2); _++)
                 {
-                    var row = rnd.Next(_fieldSize);
-                    var column = rnd.Next(_fieldSize);
-                    this.MakeMove(row, column);
+                    var row = rnd.Next(FieldSize);
+                    var column = rnd.Next(FieldSize);
+                    MakeMove(row, column);
                 }
-            } while (CheckIfSolved());
+            } while (IsSolved());
         }
 
         public void MakeMove(int row, int column)
         {
-            this._field[row, column].SwitchDirection();
+            _field[row, column].SwitchDirection();
 
-            for (int i = 0; i < this._fieldSize; i++)
+            for (var i = 0; i < FieldSize; i++)
             {
-                this._field[i, column].SwitchDirection();
-                this._field[row, i].SwitchDirection();
+                _field[i, column].SwitchDirection();
+                _field[row, i].SwitchDirection();
             }
         }
 
         public void Print()
         {
-            for (int i = 0; i < this._fieldSize; i++)
+            for (var i = 0; i < FieldSize; i++)
             {
-                for (int j = 0; j < this._fieldSize; j++)
+                for (var j = 0; j < FieldSize; j++)
                 {
-                    Console.Write($"{this._field[i, j]}");
+                    Console.Write($"{_field[i, j]}");
                 }
                 Console.WriteLine();
             }
         }
 
-        public bool CheckIfSolved()
+        public bool IsSolved()
         {
-            var direction = this._field[0, 0].Direction;
-            foreach (var cell in this._field)
-            {
-                if (cell.Direction != direction) { return false; }
-            }
-            return true;
+            var direction = _field[0, 0].Direction;
+            return _field.Cast<GameFieldCell>().All(cell => cell.Direction == direction);
         }
     }
 }
